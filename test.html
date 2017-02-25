@@ -15,7 +15,7 @@
     var el = document.querySelector('#c')
     var c = 0
     var draw = function() {
-        el.innerHTML(++c)
+        el.innerHTML = ++c
         requestAnimationFrame(draw)
     }
     draw()
