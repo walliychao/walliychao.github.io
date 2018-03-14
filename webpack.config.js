@@ -11,7 +11,7 @@ module.exports = {
         './src/index.js']
     },
     output: {
-        path: __dirname + '/static/dist/',
+        path: __dirname + '/dist/',
         filename: '[name].js',
         chunkFilename: '[name].[chunkhash].bundle.js',
         publicPath: 'http://' + hostConfig.ip + ':' + hostConfig.devPort + '/dist/',

@@ -11,8 +11,7 @@ class Controls extends Component {
     constructor(prop) {
         super(prop)
 
-        this.updType = this.updType.bind(this)
-        this.generate = this.generate.bind(this)
+        this.generating = false
     }
 
     @observable types = {
@@ -50,8 +49,7 @@ class Controls extends Component {
             heart: {
                 iter: 30000,
                 animate: true
-            },
-            custom: {}
+            }
         },
         // custom formula(try)
         formula: {
@@ -75,20 +73,20 @@ class Controls extends Component {
     @observable currentType = 'iterLine'
     @observable currentName = 'sierpinski'
 
-    @observable generating = false
-
     generate = () => {
-        if (this.generating) return
+        document.getElementById('isGen').innerHTML = 'Generating...'
         this.generating = true
-        const self = this
         setTimeout(() => {
-            self[self.currentType](
-                self.props.context,
-                self.currentName,
-                self.props.maps[self.currentName](self.types[self.currentType][self.currentName]),
-                self.types[self.currentType][self.currentName])
-            self.generating = false
-        }, 1)
+            console.log('generate start...')
+            this[this.currentType](
+                this.props.context,
+                this.currentName,
+                this.props.maps[this.currentName](this.types[this.currentType][this.currentName]),
+                this.types[this.currentType][this.currentName])
+            this.generating = false
+            document.getElementById('isGen').innerHTML = 'Generated'
+            console.log('generate completed')
+        }, 10)
 
     }
 
@@ -261,19 +259,36 @@ class Controls extends Component {
         draw()
     }
 
+    updInnerType = (e, k) => {
+        this.types[this.currentType][this.currentName][k].value = e.target.value
+        this.generate()
+    }
+
+    updInnerParam = (e, k) => {
+        this.types[this.currentType][this.currentName][k] = k === 'animate' ? e.target.checked : e.target.value
+    }
+
+    blurInnerParam = (e, k) => {
+        Number.isNaN(+this.types[this.currentType][this.currentName][k])
+            ? null : this.generate()
+    }
+
     renderControls = () => {
         const currControls = this.types[this.currentType][this.currentName]
         return <div>
             {Object.keys(currControls).map((k, i) => {
                 return <div key={i}>{k}
                     {currControls[k].value && currControls[k].list ?
-                        <select onChange={e => currControls[k].value = e.target.value} value={currControls[k].value}>
+                        <select onChange={e => this.updInnerType(e, k)} value={currControls[k].value}
+                            disabled={this.generating}>
                             {currControls[k].list.map((opt, idx) =>
                                 <option key={idx} value={opt}>{opt}</option>
                             )}
                         </select>
                         : <input type={k.indexOf('Color') !== -1 ? 'color' : (k === 'animate' ? 'checkbox' : 'number')}
-                            onChange={e => currControls[k] = k === 'animate' ? e.target.checked : e.target.value}
+                            onChange={e => this.updInnerParam(e, k)}
+                            onBlur={e => this.blurInnerParam(e, k)}
+                            disabled={this.generating}
                             value={+currControls[k] || 0} checked = {!!currControls[k]} />
                     }
                 </div>
@@ -281,30 +296,42 @@ class Controls extends Component {
         </div>
     }
 
-    updType = (e) => {
+    updType = e => {
         this.currentType = e.target.value
         this.currentName = Object.keys(this.types[this.currentType])[0]
+        this.generate()
+    }
+
+    updName = e => {
+        this.currentName = e.target.value
+        this.generate()
+    }
+
+    componentDidMount() {
+        this.generate()
     }
 
     render() {
         return <div className={this.props.className}>
             <div className="controls">
                 Type
-                <select onChange={this.updType} value={this.currentType}>
+                <select onChange={this.updType} value={this.currentType}
+                    disabled={this.generating}>
                     {Object.keys(this.types).map((k, i) => <option
                         key={i} value={k}>{k}</option>
                     )}
                 </select>
                 Name
-                <select onChange={e => this.currentName = e.target.value} value={this.currentName}>
+                <select onChange={this.updName} value={this.currentName}
+                    disabled={this.generating}>
                     {Object.keys(this.types[this.currentType]).map((k, i) => <option
                         key={i} value={k}>{k}</option>
                     )}
                 </select>
                 {this.renderControls()}
-                <button onClick={this.generate} disabled={this.generating ? 'disabled' : ''}>
-                    {this.generating ? 'Generating...' : 'Generate'}
-                </button>
+                <span id="isGen">
+                    {'Generating...'}
+                </span>
             </div>
         </div>
     }
@@ -332,7 +359,7 @@ class PageWrap extends Component {
         })
         this.ctx.fillStyle = '#fff'
         this.ctx.strokeStyle = '#fff'
-        // this.ctx.globalCompositeOperation = 'lighter'
+        this.ctx.globalCompositeOperation = 'lighter'
         this.setState({})
     }
 

@@ -27,12 +27,10 @@ class App extends Component {
 class Nav extends Component {
     render() {
         return <div>
-            <Link to="/imageTester"
-                style={styles.link} activeStyle={styles.activeLink}>imageTester</Link>
-            <Link to="/audioTester"
-                style={styles.link} activeStyle={styles.activeLink}>audioTester</Link>
             <Link to="/fractalEditor"
                 style={styles.link} activeStyle={styles.activeLink}>fractalEditor</Link>
+            <Link to="/imageTester"
+                style={styles.link} activeStyle={styles.activeLink}>imageTester</Link>
         </div>
     }
 }

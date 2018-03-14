@@ -6,7 +6,7 @@ export default css`
     float: left;
     margin-left: 10px;
     color: ${props => props.color};
-    left: ${props => props.left};
+    left: 30px;
 }
 .globalCtr {
     position: absolute;

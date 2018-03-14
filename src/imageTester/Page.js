@@ -1,6 +1,6 @@
 import React, {Component} from 'react'
 import { observer } from 'mobx-react'
-import { observable } from 'mobx'
+import { observable, action } from 'mobx'
 import generator from './generator'
 
 const style = {
@@ -29,6 +29,7 @@ const style = {
         super(props)
 
         this.generating = false
+        this.shouldReGenerate = false
     }
 
     @observable controls = {
@@ -53,23 +54,34 @@ const style = {
         }
     }
 
-    @observable generating = false
-
     @observable currentType = 'painting'
+   
+
+    componentDidMount() {
+        this.generate()
+    }
 
     generate = () => {
-        if (this.generating) return
+        document.getElementById('isGen').innerHTML = 'Generating...'
         this.generating = true
-        const self = this
         setTimeout(() => {
             generator(
                 this.props.context,
                 this.props.originCtx,
                 this.currentType,
                 this.controls[this.currentType])
-            self.generating = false
-        }, 1)
+            document.getElementById('isGen').innerHTML = 'Generated'
+            this.generating = false
+        }, 10)
+    }
 
+    @action changeType = e => {
+        this.currentType = e.target.value
+        this.generate()
+    }
+
+    @action changeParam = (e, k) => {
+        this.controls[this.currentType][k] = e.target.value
     }
 
     renderControls = () => {
@@ -78,8 +90,9 @@ const style = {
             {Object.keys(currControls).map((k, i) => {
                 return <div key={i}>{k}
                     <input type={k.indexOf('Color') !== -1 ? 'color' : 'number'}
-                    onChange={e => currControls[k] = e.target.value}
-                    value={currControls[k]} />
+                    onChange={e => this.changeParam(e, k)}
+                    onBlur = {this.generate}
+                    value={currControls[k]} disabled = {this.generating}/>
                 </div>
             })}
         </div>
@@ -89,15 +102,16 @@ const style = {
         return <div style={style.controls}>
             <div>
                 Type
-                <select onChange={e => this.currentType = e.target.value} value={this.currentType}>
+                <select onChange={this.changeType} value={this.currentType}
+                    disabled = {this.generating}>
                     {Object.keys(this.controls).map((k, i) => <option
                         key={i} value={k}>{k}</option>
                     )}
                 </select>
                 {this.renderControls()}
-                <button onClick={this.generate} disabled={this.generating ? 'disabled' : ''}>
-                    {this.generating ? 'Generating...' : 'Generate'}
-                </button>
+                <span id="isGen">
+                    {'Generating...'}
+                </span>
                 <span style={style.hint}>Drop image to change source</span>
             </div>
         </div>
@@ -117,7 +131,7 @@ class PageWrap extends Component {
         this.ctx = this.refs.canvas.getContext('2d')
         this.originCtx = this.refs.originCanvas.getContext('2d')
         const self = this
-        this.imageSource.src = '/image/imageTest.jpg'
+        this.imageSource.src = './image/imageTest.jpg'
 
         this.imageSource.onload = (e) => {
             if (self.imageSource.width > 1000 || self.imageSource.width < 500) {

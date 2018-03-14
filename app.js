@@ -32,7 +32,7 @@ const serverOptions = {
   stats: {colors: true}
 }
 
-const staticPath = path.resolve(__dirname + '/static/')
+const staticPath = path.resolve(__dirname)
 const indexPath = path.join(staticPath, 'index.html')
 
 app.use(compression())
