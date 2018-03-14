@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8"/>
+    <title>test</title>
+    <style type="text/css">
+        #cvs {
+            background-color: #000;
+        }
+    </style>
+</head>
+<body>
+<canvas id="cvs" width="500" height="500"></canvas>
+<script type="text/javascript">
+    window.onload = function () {
+        var cvs = document.getElementById('cvs')
+        var ctx = cvs.getContext('2d')
+        ctx.globalCompositeOperation = 'lighter'
+        var step = 0
+        var dtheta = Math.PI / 300
+        var draw = function () {
+            var scale = 200
+            var x = y = 0
+            var X = Y = 0
+            var getX = function (x, y, t) {
+                return (x * Math.cos(step) + y * Math.sin(step)) + 250
+            }
+            var getY = function (x, y, t) {
+                return t * 3 + 50
+            }
+            ctx.clearRect(0, 0, 500, 500)
+            for (var t = 0; t < scale; t += 0.05) {
+                x = t * 0.3 * Math.cos(t)
+                y = t * 0.3 * Math.sin(t)
+                X = getX(x, y)
+                Y = getY(x, y, t)
+                ctx.fillStyle = 'rgb(' + Math.round(t + 55) + ', ' + Math.round(t) + ', ' + Math.round(t + 55) + ')'
+                ctx.fillRect(x + t * Math.cos(step) + 200, y + t * Math.sin(step) + 200, 1, 1)
+                // ctx.fillRect(X, Y, 1, 1)
+            }
+            step += 0.01
+            if (step > 2 * Math.PI) step = 0
+            requestAnimationFrame(draw)
+        }
+        draw()
+    }
+</script>
+</body>
+</html>

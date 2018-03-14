@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width">
+  <title>Voice-change-O-matic</title>
+    <link href="/audio/app.css" rel="stylesheet" type="text/css">
+  
+</head>
+<body>
+  <div class="wrapper">
+
+    <canvas class="visualizer" width="640" height="100"></canvas> 
+
+    <form class="controls">
+      <div>
+        <a class="startRecord">Start Recording</a>
+        <a class="stopRecord">Stop Recording</a>
+      </div>
+      <div class="soundClips"></div>
+    </form>
+
+
+  </div>
+
+  <!-- The following element pulls in the script for the default template functionality -->
+      
+    <!-- <script src="scripts/install.js"></script>   -->
+
+    <!-- Below is your custom application script -->
+
+    <script src="/audio/mediaRecord.js"></script>
+  
+</body>
+</html>

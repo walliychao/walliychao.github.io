@@ -1,0 +1,73 @@
+/* || General layout rules for narrow screens */
+
+html {
+  height: 100%;
+  font-family: 'Arial';
+  font-size: 10px;
+}
+
+body {
+  width: 100%;
+  height: inherit;
+}
+
+h1, h2, label {
+  font-size: 14px;
+  font-family: 'Arial';
+  text-align: center;
+  color: #333;
+  margin: 0;
+}
+
+.wrapper {
+  height: 100%;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+/* || main UI sections */
+
+header {
+  height: 120px;
+}
+
+canvas {
+  border-top: 1px solid black;
+  border-bottom: 1px solid black;
+  margin-bottom: -3px;
+  box-shadow: 0 -2px 4px rgba(0,0,0,0.7),
+              0 3px 4px rgba(0,0,0,0.7);
+}
+
+/* || select element styling */
+
+.controls div {
+  width: 100%;
+  padding-top: 1rem;
+}
+
+a {
+  cursor: pointer;
+  font-size: 14px;
+  padding: 0 12px;
+  color: salmon;
+}
+a:hover, a:focus {
+  text-decoration: none;
+  color: red;
+}
+
+@media (min-width: 481px) {
+  /*CSS for medium width screens*/
+
+  /* || Basic layout changes for the main control buttons */
+
+}
+
+@media all and (min-width: 800px) {
+  /*CSS for wide screens*/
+}
+
+@media (min-width: 1100px) {
+  /*CSS for really wide screens*/
+}
