@@ -72,7 +72,7 @@ const style = {
                 this.controls[this.currentType])
             document.getElementById('isGen').innerHTML = 'Generated'
             this.generating = false
-        }, 10)
+        }, 100)
     }
 
     @action changeType = e => {

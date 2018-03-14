@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "node index.js",
-    "start": "webpack --config webpack.prod.js",
+    "start": "rm -r ./dist && webpack --config webpack.prod.js",
     "release": "rm -r ../walliychao.github.io/dist && cp -r ./static/ ../walliychao.github.io/",
     "r": "npm run start && npm run release"
   },
@@ -36,7 +36,6 @@
     "bluebird": "^3.4.6",
     "react-dom": "^15.3.2",
     "react-hot-loader": "^3.0.0-beta.6",
-    "styled-components": "^3.2.2",
     "webpack": "^1.13.2",
     "webpack-dev-middleware": "^1.6.1",
     "webpack-hot-middleware": "^2.12.2"

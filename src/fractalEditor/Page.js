@@ -11,7 +11,6 @@ class Controls extends Component {
     constructor(prop) {
         super(prop)
 
-        this.generating = false
     }
 
     @observable types = {
@@ -75,7 +74,6 @@ class Controls extends Component {
 
     generate = () => {
         document.getElementById('isGen').innerHTML = 'Generating...'
-        this.generating = true
         setTimeout(() => {
             console.log('generate start...')
             this[this.currentType](
@@ -83,10 +81,9 @@ class Controls extends Component {
                 this.currentName,
                 this.props.maps[this.currentName](this.types[this.currentType][this.currentName]),
                 this.types[this.currentType][this.currentName])
-            this.generating = false
             document.getElementById('isGen').innerHTML = 'Generated'
             console.log('generate completed')
-        }, 10)
+        }, 100)
 
     }
 
