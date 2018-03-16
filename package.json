@@ -5,9 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "node index.js",
-    "start": "rm -r ./dist && webpack --config webpack.prod.js",
-    "release": "rm -r ../walliychao.github.io/dist && cp -r ./static/ ../walliychao.github.io/",
-    "r": "npm run start && npm run release"
+    "release": "rm -r ./dist && webpack --config webpack.prod.js"
   },
   "keywords": [
     "es"

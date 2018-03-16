@@ -2,43 +2,24 @@ import React, {Component} from 'react'
 import { observer } from 'mobx-react'
 import { observable, action } from 'mobx'
 import generator from './generator'
-
-const style = {
-    canvas: {
-        backgroundColor: 'black',
-        display: 'inline-block',
-        float: 'left',
-        transform: 'translateZ(0)'
-    },
-    controls: {
-        display: 'inline-block',
-        float: 'left',
-        marginLeft: 10
-    },
-    hint: {
-        position: 'absolute',
-        color: 'lightgrey',
-        right: 5,
-        top: 5
-    }
-}
+import styled from 'styled-components'
+import styles from './page.styled.js'
 
 @observer class Controls extends Component {
 
     constructor(props) {
         super(props)
 
-        this.generating = false
         this.shouldReGenerate = false
     }
 
     @observable controls = {
         triangulate: {
-            edgeDetectValue: 100,
+            edgeDetectFactor: 100,
             maxPointNumber: 5000
         },
         printing: {
-            edgeDetectValue: 100,
+            edgeDetectFactor: 100,
             printingColor: '#ffffff'
         },
         mosaic: {
@@ -50,9 +31,17 @@ const style = {
         painting: {
             scaleNumber: 5,
             brushSize: 2,
-            SFactor: 1.5
+            saturateFactor: 1.5
         }
     }
+
+    dict = {
+        triangulate: '三角剖分',
+        printing: '版印',
+        mosaic: '马赛克',
+        poster: '海报',
+        painting: '水彩'
+    };
 
     @observable currentType = 'painting'
    
@@ -63,7 +52,6 @@ const style = {
 
     generate = () => {
         document.getElementById('isGen').innerHTML = 'Generating...'
-        this.generating = true
         setTimeout(() => {
             generator(
                 this.props.context,
@@ -71,8 +59,7 @@ const style = {
                 this.currentType,
                 this.controls[this.currentType])
             document.getElementById('isGen').innerHTML = 'Generated'
-            this.generating = false
-        }, 100)
+        }, 50)
     }
 
     @action changeType = e => {
@@ -92,31 +79,35 @@ const style = {
                     <input type={k.indexOf('Color') !== -1 ? 'color' : 'number'}
                     onChange={e => this.changeParam(e, k)}
                     onBlur = {this.generate}
-                    value={currControls[k]} disabled = {this.generating}/>
+                    value={currControls[k]}/>
                 </div>
             })}
         </div>
     }
 
     render() {
-        return <div style={style.controls}>
-            <div>
-                Type
-                <select onChange={this.changeType} value={this.currentType}
-                    disabled = {this.generating}>
-                    {Object.keys(this.controls).map((k, i) => <option
-                        key={i} value={k}>{k}</option>
-                    )}
-                </select>
+        return <div className={this.props.className}>
+            <div className="controls">
+                <ul>
+                {Object.keys(this.controls).map((k, i) => 
+                    <li key={i}>
+                        <input type="radio" name="type" id={k} value={k} checked={this.currentType === k} onChange={this.changeType} />
+                        <label className={this.currentType === k ? 'checked' : ''} htmlFor={k}>{this.dict[k]}</label>
+                    </li>
+                )}
+                </ul>
                 {this.renderControls()}
                 <span id="isGen">
                     {'Generating...'}
                 </span>
-                <span style={style.hint}>Drop image to change source</span>
+                <span className="hint">Drop image on the canvas to change source</span>
             </div>
         </div>
     }
 }
+
+const StyledControls = styled(Controls)`${styles}`
+
 
 class PageWrap extends Component {
 
@@ -166,9 +157,11 @@ class PageWrap extends Component {
         return <div onDrop={this.imageDrop}
             onDragOver={e => e.preventDefault()}
             onDragLeave={e => e.preventDefault()}>
-            <canvas ref="canvas" style={style.canvas}></canvas>
+            <canvas ref="canvas" style={{
+                backgroundColor: 'black', display: 'inline-block', float: 'left'
+            }}></canvas>
             <canvas ref="originCanvas" style={{display: 'none'}}></canvas>
-            {this.ctx ? <Controls context={this.ctx} originCtx={this.originCtx} /> : null}
+            {this.ctx ? <StyledControls context={this.ctx} originCtx={this.originCtx} /> : null}
         </div>
     }
 }

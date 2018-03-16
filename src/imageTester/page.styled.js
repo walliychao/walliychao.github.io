@@ -12,10 +12,11 @@ export default css`
         padding: 2px 5px;
     }
 }
-.globalCtr {
+.hint {
     position: absolute;
-    right: 300px;
-    top: 10px;
+    color: lightgrey;
+    top: 5px;
+    right: 5px;
 }
 #isGen {
     color: grey;

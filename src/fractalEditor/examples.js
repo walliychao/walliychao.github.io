@@ -237,10 +237,10 @@ class Maps {
         return {
             P0: new Affine(300, 400),
             MSet: [
-                Mutation.image(new Affine(376, 412), new Affine(526, 296), new Affine(348, 188),
-                    new Affine(340, 381), new Affine(516, 329), new Affine(390, 191)),
-                Mutation.image(new Affine(376, 412), new Affine(526, 296), new Affine(348, 188),
-                    new Affine(432, 212), new Affine(498, 150), new Affine(462, 88))
+                Mutation.image(new Affine(156, 432), new Affine(306, 316), new Affine(128, 208),
+                    new Affine(120, 401), new Affine(296, 349), new Affine(170, 211)),
+                Mutation.image(new Affine(156, 432), new Affine(306, 316), new Affine(128, 208),
+                    new Affine(212, 232), new Affine(278, 170), new Affine(242, 108))
             ],
             Ps: [0.9, 0.1]
         }
@@ -249,20 +249,20 @@ class Maps {
         return {
             P0: new Affine(300, 400),
             MSet: [
-                Mutation.image(new Affine(280, 165), new Affine(669, 165), new Affine(476, 424),
-                    new Affine(280, 165), new Affine(476, 424), new Affine(314, 328)),
-                Mutation.image(new Affine(280, 165), new Affine(669, 165), new Affine(476, 424),
-                    new Affine(669, 165), new Affine(476, 424), new Affine(629, 328)),
-                Mutation.image(new Affine(280, 165), new Affine(669, 165), new Affine(476, 424),
-                    new Affine(280, 165), new Affine(476, 251), new Affine(379, 111)),
-                Mutation.image(new Affine(280, 165), new Affine(669, 165), new Affine(476, 424),
-                    new Affine(669, 165), new Affine(476, 251), new Affine(558, 111))
+                Mutation.image(new Affine(60, 165), new Affine(449, 165), new Affine(256, 424),
+                    new Affine(60, 165), new Affine(256, 424), new Affine(94, 328)),
+                Mutation.image(new Affine(60, 165), new Affine(449, 165), new Affine(256, 424),
+                    new Affine(449, 165), new Affine(256, 424), new Affine(409, 328)),
+                Mutation.image(new Affine(60, 165), new Affine(449, 165), new Affine(256, 424),
+                    new Affine(60, 165), new Affine(256, 251), new Affine(159, 111)),
+                Mutation.image(new Affine(60, 165), new Affine(449, 165), new Affine(256, 424),
+                    new Affine(449, 165), new Affine(256, 251), new Affine(338, 111))
             ],
             Ps: [0.25, 0.25, 0.25, 0.25]
         }
     }
 
-    julia({pixels, size, centerX, centerY, iter}) {
+    julia({pixels, size, centerX, centerY, iteration}) {
         let Z0, Z1, d = (+pixels / 2) | 0
         let C = new Complex(+centerX, +centerY)
         let ZSet = []
@@ -270,7 +270,7 @@ class Maps {
             for (let j = -d; j <= d; j++) {
                 Z0 = new Complex(i / d * +size, j / d * +size)
                 let k = 0
-                for (; k < +iter; k++) {
+                for (; k < +iteration; k++) {
                     Z1 = Complex.add(Complex.multiply(Z0, Z0), C)
                     if (Z1.module() < 2){
                         Z0 = Z1
@@ -283,7 +283,7 @@ class Maps {
         return ZSet
     }
 
-    mandelbrot({pixels, size, distanceX, distanceY, iter}) {
+    mandelbrot({pixels, size, distanceX, distanceY, iteration}) {
         let Z0, Z1, C, d = (+pixels / 2) | 0
         let ZSet = []
         for (let i = -d; i <= d; i++) {
@@ -291,7 +291,7 @@ class Maps {
                 Z0 = new Complex(0, 0)
                 C = new Complex(i / d * +size + +distanceX, j / d * +size + +distanceY)
                 let k = 0
-                for (; k < +iter; k++) {
+                for (; k < +iteration; k++) {
                     Z1 = Complex.add(Complex.multiply(Z0, Z0), C)
                     if (Z1.module() < 2){
                         Z0 = Z1

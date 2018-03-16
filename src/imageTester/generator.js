@@ -34,7 +34,7 @@ const generator = {
         Filter.convolutionFilterR(imageData, blurMatrix)
         Filter.convolutionFilterR(imageData, edgeMatrix)
         // get edge point
-        let temp = Filter.getEdgePoint(imageData, opts.edgeDetectValue)
+        let temp = Filter.getEdgePoint(imageData, opts.edgeDetectFactor)
         let detectionNum = temp.length
         
         let points = []
@@ -122,7 +122,7 @@ const generator = {
         let rgb = getRGB(opts.printingColor)
 
         Filter.colorFilter(imageData, (data, i) => {
-            if (data[i] > opts.edgeDetectValue) {
+            if (data[i] > opts.edgeDetectFactor) {
                 data[i] = rgb[0]
                 data[i+1] = rgb[1]
                 data[i+2] = rgb[2]
@@ -143,7 +143,7 @@ const generator = {
 
         const brushSize = +opts.brushSize || 1
         const scaleNumber = +opts.scaleNumber || 5
-        const SFactor = +opts.SFactor || 0
+        const SFactor = +opts.saturateFactor || 0
 
         context.putImageData(originCtx.getImageData(0, 0, width, height), 0, 0)
 

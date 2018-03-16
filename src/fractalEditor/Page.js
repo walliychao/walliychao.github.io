@@ -13,18 +13,40 @@ class Controls extends Component {
 
     }
 
+    dict = {
+        iterLine: '分形线段',
+        iterPoint: '分形点集',
+        formula: '分形艺术',
+        sierpinski: '谢尔宾斯基三角形',
+        fiber: '分形藤蔓',
+        step: '分形台阶',
+        tree: '分形树',
+        c_shape: 'C曲线',
+        koch: '科赫曲线',
+        shrub: '分形灌木',
+        transform: '分形动画',
+        sierpinski_fiber: '谢尔宾斯基->藤蔓',
+        step_tree: '台阶->树',
+        koch_shrub: '科赫->灌木',
+        fern: '巴恩斯利蕨',
+        helix: '螺旋',
+        heart: '心形',
+        julia: '朱利亚集(julia)',
+        mandelbrot: '曼德布洛特集(mandelbrot)'
+    }
+
     @observable types = {
         // transform between two fractal which has the same length of MSet
         iterLine: {
-            sierpinski: {iter: 7},
-            fiber: {iter: 7},
-            step: {iter: 7},
-            tree: {iter: 7},
-            c_shape: {iter: 7},
-            koch: {iter: 7},
-            shrub: {iter: 7},
+            sierpinski: {iteration: 7},
+            fiber: {iteration: 7},
+            step: {iteration: 7},
+            tree: {iteration: 7},
+            c_shape: {iteration: 7},
+            koch: {iteration: 7},
+            shrub: {iteration: 7},
             transform: {
-                iter: 7,
+                iteration: 7,
                 name: {
                     value: 'sierpinski_fiber',
                     list: [
@@ -38,15 +60,15 @@ class Controls extends Component {
         // custom fractal (6 points .i.e 2 triangles determines A Mutation(image))
         iterPoint: {
             fern: {
-                iter: 30000,
+                iteration: 30000,
                 animate: false
             },
             helix: {
-                iter: 30000,
+                iteration: 30000,
                 animate: false
             },
             heart: {
-                iter: 30000,
+                iteration: 30000,
                 animate: true
             }
         },
@@ -57,14 +79,14 @@ class Controls extends Component {
                 size: 1.3,
                 centerX: 0.28,
                 centerY: 0.51,
-                iter: 35
+                iteration: 35
             },
             mandelbrot: {
                 pixels: 500,
                 size: 1.3,
                 distanceX: -0.5,
                 distanceY: 0,
-                iter: 35
+                iteration: 35
             }
         }
     }
@@ -98,7 +120,7 @@ class Controls extends Component {
         for (let i = 0; i < n; i++) {
             for (let j = 0; j < n; j++) {
                 color = [55, 0, 55]
-                mod = ZSet[i*n+j] * (200 / opts.iter)
+                mod = ZSet[i*n+j] * (200 / opts.iteration)
                 color[0] += mod
                 color[1] += mod
                 color[2] += mod
@@ -128,7 +150,7 @@ class Controls extends Component {
             }
             let r, Pn, M, p
             let result = [[P0.x, P0.y]]
-            for (let i = 0; i < opts.iter; i++) {
+            for (let i = 0; i < opts.iteration; i++) {
                 r = Math.random()
                 p = 0
                 M = null
@@ -187,7 +209,7 @@ class Controls extends Component {
 
         let pSet = PSet.slice()
         let index = 0
-        for (let i = 0; i < opts.iter; i++) {
+        for (let i = 0; i < opts.iteration; i++) {
             let l = Math.pow(MSet.length, i)
             for (let j = 0; j < l; j++) {
                 for (let k = 0; k < MSet.length; k++) {
@@ -227,7 +249,7 @@ class Controls extends Component {
             ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height)
             let pSet = PSet.slice()
             let index = 0
-            for (let i = 0; i < opts.iter; i++) {
+            for (let i = 0; i < opts.iteration; i++) {
                 let l = Math.pow(len, i)
                 for (let j = 0; j < l; j++) {
                     for (let k = 0; k < len; k++) {
@@ -274,19 +296,24 @@ class Controls extends Component {
         const currControls = this.types[this.currentType][this.currentName]
         return <div>
             {Object.keys(currControls).map((k, i) => {
-                return <div key={i}>{k}
+                return <div key={i}>
                     {currControls[k].value && currControls[k].list ?
-                        <select onChange={e => this.updInnerType(e, k)} value={currControls[k].value}
-                            disabled={this.generating}>
-                            {currControls[k].list.map((opt, idx) =>
-                                <option key={idx} value={opt}>{opt}</option>
-                            )}
-                        </select>
-                        : <input type={k.indexOf('Color') !== -1 ? 'color' : (k === 'animate' ? 'checkbox' : 'number')}
-                            onChange={e => this.updInnerParam(e, k)}
-                            onBlur={e => this.blurInnerParam(e, k)}
-                            disabled={this.generating}
-                            value={+currControls[k] || 0} checked = {!!currControls[k]} />
+                        <ul>
+                        {currControls[k].list.map((opt, idx) => 
+                            <li key={i + '.' + idx}>
+                                <input type="radio" name="innertype"
+                                    id={opt} value={currControls[k].list[idx]}
+                                    checked={currControls[k].value === opt} onChange={e => this.updInnerType(e, k)} />
+                                <label className={currControls[k].value === opt ? 'checked' : ''} htmlFor={opt}>{this.dict[opt]}</label>
+                            </li>
+                        )}
+                        </ul>
+                        : <div> {k}
+                            <input type={k.indexOf('Color') !== -1 ? 'color' : (k === 'animate' ? 'checkbox' : 'number')}
+                                onChange={e => this.updInnerParam(e, k)}
+                                onBlur={e => this.blurInnerParam(e, k)}
+                                value={+currControls[k] || 0} checked = {!!currControls[k]} />
+                        </div>
                     }
                 </div>
             })}
@@ -311,20 +338,22 @@ class Controls extends Component {
     render() {
         return <div className={this.props.className}>
             <div className="controls">
-                Type
-                <select onChange={this.updType} value={this.currentType}
-                    disabled={this.generating}>
-                    {Object.keys(this.types).map((k, i) => <option
-                        key={i} value={k}>{k}</option>
-                    )}
-                </select>
-                Name
-                <select onChange={this.updName} value={this.currentName}
-                    disabled={this.generating}>
-                    {Object.keys(this.types[this.currentType]).map((k, i) => <option
-                        key={i} value={k}>{k}</option>
-                    )}
-                </select>
+                <ul>
+                {Object.keys(this.types).map((k, i) => 
+                    <li key={i}>
+                        <input type="radio" name="type" id={k} value={k} checked={this.currentType === k} onChange={this.updType} />
+                        <label className={this.currentType === k ? 'checked' : ''} htmlFor={k}>{this.dict[k]}</label>
+                    </li>
+                )}
+                </ul>
+                <ul>
+                {Object.keys(this.types[this.currentType]).map((k, i) => 
+                    <li key={i}>
+                        <input type="radio" name="name" id={k} value={k} checked={this.currentName === k} onChange={this.updName} />
+                        <label className={this.currentName === k ? 'checked' : ''} htmlFor={k}>{this.dict[k]}</label>
+                    </li>
+                )}
+                </ul>
                 {this.renderControls()}
                 <span id="isGen">
                     {'Generating...'}
@@ -348,7 +377,7 @@ class PageWrap extends Component {
 
     componentDidMount() {
         this.ctx = this.refs.canvas.getContext('2d')
-        this.refs.canvas.width = 800
+        this.refs.canvas.width = 500
         this.refs.canvas.height = 500
         this.maps = new Maps({
             trans: Math.min(this.refs.canvas.width, this.refs.canvas.height) * 0.1,
@@ -365,7 +394,7 @@ class PageWrap extends Component {
             <canvas ref="canvas" style={{
                 backgroundColor: 'black', display: 'inline-block', float: 'left'
             }}></canvas>
-            {this.ctx ? <Controls color="salmon" context={this.ctx} maps={this.maps} /> : null}
+            {this.ctx ? <StyledControls context={this.ctx} maps={this.maps} /> : null}
         </div>
         
     }
